@@ -77,3 +77,8 @@ async def get_sub_type() -> List[str]:
 async def get_branches() -> List[str]:
     branches = ["AIML", "AIDS", "AR", "IIOT"]
     return branches
+
+@router.get("/units", response_model=List[str])
+async def get_units() -> List[str]:
+    units = ["Unit 1", "Unit 2", "Unit 3", "Unit 4"]
+    return units
