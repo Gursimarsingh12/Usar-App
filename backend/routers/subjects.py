@@ -82,3 +82,8 @@ async def get_branches() -> List[str]:
 async def get_units() -> List[str]:
     units = ["Unit 1", "Unit 2", "Unit 3", "Unit 4"]
     return units
+
+@router.get("/credits", response_model=List[str])
+async def get_credits() -> List[str]:
+    credits = ["1", "2", "3", "4"]
+    return credits
