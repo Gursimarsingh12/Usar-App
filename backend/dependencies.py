@@ -4,7 +4,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-mongo = os.getenv("MONGO")
+mongo = os.getenv("MONGODB_URI")
 client = motor_asyncio.AsyncIOMotorClient(mongo)
 subjects_db = client.subjects
 subjects_collection = subjects_db.get_collection("subjects collection")
