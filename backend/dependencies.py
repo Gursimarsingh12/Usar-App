@@ -29,7 +29,7 @@ class MongoDB:
 
     @classmethod
     async def get_subjects_collection(cls):
-        await cls.connect()
+        await cls.connect()  # Ensure the connection is awaited
         if cls.subjects_collection is None:
-            raise RuntimeError("MongoDB connection nhi chl raha")
+            raise RuntimeError("MongoDB connection not initialized")
         return cls.subjects_collection
