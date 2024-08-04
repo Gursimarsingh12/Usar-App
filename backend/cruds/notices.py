@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import html
 from schemas.notices import notice_schema, notices_list
-from dependencies import notices_collection
+from dependencies import MongoDB
 
 url = "https://sites.google.com/view/ggsipuedc/notice-board?authuser=0"
 
@@ -35,6 +35,7 @@ def extract_notices(soup):
 async def get_notices():
     soup = fetch_webpage(url)
     notices = extract_notices(soup)
+    notices_collection = await MongoDB.get_notices_collection()
     await notices_collection.insert_many(notices)
     return notices_list(notices)
 
@@ -42,6 +43,7 @@ async def get_latest_notices():
     soup = fetch_webpage(url)
     new_notices = extract_notices(soup)
     latest_notices = []
+    notices_collection = await MongoDB.get_notices_collection()
 
     for notice in new_notices:
         existing_notice = await notices_collection.find_one({"title": notice["title"], "link": notice["link"]})
