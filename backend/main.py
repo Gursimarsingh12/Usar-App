@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import subjects, users, notices
 import uvicorn
 import os
+from dependencies import MongoDB
 
 app = FastAPI()
 
@@ -13,6 +14,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.on_event("startup")
+async def startup_event():
+    await MongoDB.connect()
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    await MongoDB.close()
 
 app.include_router(notices.router)
 app.include_router(users.router)
