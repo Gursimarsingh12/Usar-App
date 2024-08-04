@@ -12,7 +12,7 @@ async def add_subject(subject: Subject) -> Subject:
     raise HTTPException(status_code=500, detail="Subject could not be added")
 
 async def get_all_subjects():
-    loop = await get_or_create_eventloop()
+    loop = get_or_create_eventloop()
     subs = await loop.run_in_executor(None, lambda: subjects_collection.find({}).to_list(None))
     return subs
 
