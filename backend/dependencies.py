@@ -6,9 +6,9 @@ dotenv.load_dotenv()
 
 class MongoDB:
     client = None
-
+    
     @classmethod
-    def get_client(cls):
+    async def get_client(cls):
         if cls.client is None:
             mongo_uri = os.getenv("MONGO")
             cls.client = motor_asyncio.AsyncIOMotorClient(mongo_uri)
