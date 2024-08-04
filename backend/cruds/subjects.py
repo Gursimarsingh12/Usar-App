@@ -10,8 +10,9 @@ async def add_subject(subject: Subject) -> Subject:
         return subject
     raise HTTPException(status_code=500, detail="Subject could not be added")
 
-async def get_all_subjects() -> List[dict]:
-    subs = await MongoDB.subjects_collection.find({}).to_list(None)
+async def get_all_subjects():
+    collection = MongoDB.get_subjects_collection()
+    subs = await collection.find({}).to_list(None)
     return subjects_list(subs)
 
 async def get_subjects_by_semester_and_branch(semester_name: str, branch_name: str) -> List[dict]:

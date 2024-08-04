@@ -24,3 +24,9 @@ class MongoDB:
     @classmethod
     async def close(cls):
         cls.client.close()
+    
+    @classmethod
+    def get_subjects_collection(cls):
+        if cls.subjects_collection is None:
+            raise RuntimeError("MongoDB connection not initialized")
+        return cls.subjects_collection
