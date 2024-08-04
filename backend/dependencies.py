@@ -6,42 +6,39 @@ from fastapi import HTTPException
 
 dotenv.load_dotenv()
 
-client: Optional[AsyncIOMotorClient] = None
+class MongoDBClient:
+    _client: Optional[AsyncIOMotorClient] = None
 
-async def connect_to_database():
-    global client
-    if client is None:
-        try:
-            mongo_uri = os.getenv("MONGODB_URI")
-            client = AsyncIOMotorClient(mongo_uri)
-            print("Connected to MongoDB")
-        except Exception as e:
-            print(f"Error connecting to MongoDB: {e}")
-            raise HTTPException(status_code=500, detail="Database connection error")
+    @classmethod
+    async def get_client(cls) -> AsyncIOMotorClient:
+        if cls._client is None:
+            try:
+                mongo_uri = os.getenv("MONGODB_URI")
+                cls._client = AsyncIOMotorClient(mongo_uri)
+                print("Connected to MongoDB")
+            except Exception as e:
+                print(f"Error connecting to MongoDB: {e}")
+                raise HTTPException(status_code=500, detail="Database connection error")
+        return cls._client
 
-async def close_database_connection():
-    global client
-    if client is not None:
-        client.close()
-        print("MongoDB connection closed")
+    @classmethod
+    async def close_client(cls):
+        if cls._client is not None:
+            cls._client.close()
+            cls._client = None
+            print("MongoDB connection closed")
 
 async def get_subjects_collection():
-    global client
-    if client is None:
-        await connect_to_database()
+    client = await MongoDBClient.get_client()
     db = client.subjects
     return db.get_collection("subjects collection")
 
 async def get_users_collection():
-    global client
-    if client is None:
-        await connect_to_database()
+    client = await MongoDBClient.get_client()
     db = client.users
     return db.get_collection("users_collection")
 
 async def get_notices_collection():
-    global client
-    if client is None:
-        await connect_to_database()
+    client = await MongoDBClient.get_client()
     db = client.notices_db
     return db.get_collection("notices_collection")
