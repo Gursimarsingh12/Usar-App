@@ -3,7 +3,6 @@ from models.subjects import Subject
 from schemas.subjects import subject_schema, subjects_list
 from typing import List
 from fastapi import HTTPException
-from dependencies import get_or_create_eventloop
 
 async def add_subject(subject: Subject) -> Subject:
     sub = await subjects_collection.insert_one(subject.model_dump())
@@ -11,10 +10,9 @@ async def add_subject(subject: Subject) -> Subject:
         return subject
     raise HTTPException(status_code=500, detail="Subject could not be added")
 
-async def get_all_subjects():
-    loop = get_or_create_eventloop()
-    subs = await loop.run_in_executor(None, lambda: subjects_collection.find({}).to_list(None))
-    return subs
+async def get_all_subjects() -> List[dict]:
+    subs = await subjects_collection.find({}).to_list(None)
+    return subjects_list(subs)
 
 async def get_subjects_by_semester_and_branch(semester_name: str, branch_name: str) -> List[dict]:
     subs = await subjects_collection.find({"semester_name": semester_name, "branch_name": branch_name}).to_list(None)
