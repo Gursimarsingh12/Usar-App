@@ -3,7 +3,7 @@ from models.subjects import Subject
 from schemas.subjects import subject_schema, subjects_list
 from typing import List
 from fastapi import HTTPException
-from main import get_or_create_eventloop
+from dependencies import get_or_create_eventloop
 
 # async def add_subject(subject: Subject) -> Subject:
 #     sub = await subjects_collection.insert_one(subject.model_dump())

@@ -1,9 +1,18 @@
 from motor import motor_asyncio
 import os
 import dotenv
-from main import get_or_create_eventloop
+import asyncio
 
 dotenv.load_dotenv()
+
+def get_or_create_eventloop():
+    try:
+        return asyncio.get_event_loop()
+    except RuntimeError as ex:
+        if "There is no current event loop in thread" in str(ex):
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            return asyncio.get_event_loop()
 
 mongo = os.getenv("MONGO")
 loop = get_or_create_eventloop()
