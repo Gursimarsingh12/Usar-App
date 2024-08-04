@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from routers import subjects, users, notices
 import uvicorn
 import os
-from dependencies import client, connect_to_database, close_database_connection
+from dependencies import connect_to_database, close_database_connection
 
 app = FastAPI()
 

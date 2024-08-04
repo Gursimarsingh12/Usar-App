@@ -26,19 +26,22 @@ async def close_database_connection():
         print("MongoDB connection closed")
 
 async def get_subjects_collection():
+    global client
     if client is None:
-        raise HTTPException(status_code=500, detail="Database connection not established")
+        await connect_to_database()
     db = client.subjects
     return db.get_collection("subjects collection")
 
 async def get_users_collection():
+    global client
     if client is None:
-        raise HTTPException(status_code=500, detail="Database connection not established")
+        await connect_to_database()
     db = client.users
     return db.get_collection("users_collection")
 
 async def get_notices_collection():
+    global client
     if client is None:
-        raise HTTPException(status_code=500, detail="Database connection not established")
+        await connect_to_database()
     db = client.notices_db
     return db.get_collection("notices_collection")
