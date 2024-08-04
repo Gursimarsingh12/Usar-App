@@ -3,6 +3,7 @@ import os
 from fastapi import FastAPI
 from routers import subjects, users, notices
 from dependencies import connect_to_database, close_database_connection
+import uvicorn
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
@@ -21,5 +22,4 @@ app.include_router(users.router)
 app.include_router(subjects.router)
 
 if __name__ == "__main__":
-    import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
