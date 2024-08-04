@@ -11,11 +11,14 @@ from cruds.subjects import (
     delete_subject
 )
 
-router = APIRouter()
+router = APIRouter(
+    tags=["subjects"],
+    responses={404: {"description": "Not found"}}
+)
 
 @router.get("/")
 def welcome():
-    return {"message": "Welcome to USAR Subjects API!!"}
+    return {"message": "Welcome to USAR API!!"}
 
 @router.post("/subjects", response_model=Subject)
 async def create_subject(subject: Subject):

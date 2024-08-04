@@ -6,5 +6,9 @@ dotenv.load_dotenv()
 
 mongo = os.getenv("MONGO")
 client = motor_asyncio.AsyncIOMotorClient(mongo)
-db = client.subjects
-collection = db.get_collection("subjects collection")
+subjects_db = client.subjects
+subjects_collection = subjects_db.get_collection("subjects collection")
+users_db = client.users
+user_collection = users_db.get_collection("users_collection")
+notices_db = client.notices_db
+notices_collection = notices_db.get_collection("notices_collection")
