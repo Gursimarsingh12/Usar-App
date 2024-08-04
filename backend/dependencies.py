@@ -12,7 +12,7 @@ async def connect_to_database():
     global client
     if client is None:
         try:
-            mongo_uri = os.getenv("MONGO")
+            mongo_uri = os.getenv("MONGODB_URI")
             client = AsyncIOMotorClient(mongo_uri)
             print("Connected to MongoDB")
         except Exception as e:
