@@ -2,12 +2,16 @@ from http.server import BaseHTTPRequestHandler
 from fastapi.middleware.wsgi import WSGIMiddleware
 from main import app as fastapi_app
 
+# Wrap the FastAPI app with WSGIMiddleware
+fastapi_app = WSGIMiddleware(fastapi_app)
+
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         from io import BytesIO
         from urllib.parse import urlparse, parse_qs
-        from wsgiref.simple_server import make_server
+        import asyncio
 
+        # Setup the WSGI environment
         environ = {
             'REQUEST_METHOD': self.command,
             'PATH_INFO': self.path,
@@ -28,7 +32,7 @@ class handler(BaseHTTPRequestHandler):
                 self.send_header(*header)
             self.end_headers()
 
-        fastapi_app = WSGIMiddleware(fastapi_app)
+        # Call the FastAPI app using WSGIMiddleware
         result = fastapi_app(environ, start_response)
         for data in result:
             self.wfile.write(data)
