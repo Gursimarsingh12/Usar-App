@@ -9,3 +9,4 @@ beautifulsoup4==4.12.3
 requests==2.31.0
 urllib3==1.26.6
 mangum==0.17.0
+asgiref==3.8.1
