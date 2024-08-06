@@ -1,10 +1,19 @@
 from fastapi import FastAPI
 from routers import subjects, users, notices
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 import os
 from dependencies import client, connect_to_database, close_database_connection
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 async def startup_event():
