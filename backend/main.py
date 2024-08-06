@@ -3,6 +3,7 @@ from routers import subjects, users, notices
 import uvicorn
 import os
 from dependencies import client, connect_to_database, close_database_connection
+from mangum import Mangum
 
 app = FastAPI()
 
@@ -17,6 +18,8 @@ async def shutdown_event():
 app.include_router(notices.router)
 app.include_router(users.router)
 app.include_router(subjects.router)
+
+handler = Mangum(app)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
