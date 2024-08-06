@@ -1,23 +1,44 @@
-from motor import motor_asyncio
 import os
 import dotenv
+from motor.motor_asyncio import AsyncIOMotorClient
+from typing import Optional
+from fastapi import HTTPException
 
 dotenv.load_dotenv()
 
-class MongoDB:
-    client = None
-    
-    @classmethod
-    async def get_client(cls):
-        if cls.client is None:
+client: Optional[AsyncIOMotorClient] = None
+
+async def connect_to_database():
+    global client
+    if client is None:
+        try:
             mongo_uri = os.getenv("MONGO")
-            cls.client = motor_asyncio.AsyncIOMotorClient(mongo_uri)
-        return cls.client
-    
-client = MongoDB.get_client()
-subjects_db = client.subjects
-subjects_collection = subjects_db.get_collection("subjects collection")
-users_db = client.users
-user_collection = users_db.get_collection("users_collection")
-notices_db = client.notices_db
-notices_collection = notices_db.get_collection("notices_collection")
+            client = AsyncIOMotorClient(mongo_uri)
+            print("Connected to MongoDB")
+        except Exception as e:
+            print(f"Error connecting to MongoDB: {e}")
+            raise HTTPException(status_code=500, detail="Database connection error")
+
+async def close_database_connection():
+    global client
+    if client is not None:
+        client.close()
+        print("MongoDB connection closed")
+
+async def get_subjects_collection():
+    if client is None:
+        raise HTTPException(status_code=500, detail="Database connection not established")
+    db = client.subjects
+    return db.get_collection("subjects collection")
+
+async def get_users_collection():
+    if client is None:
+        raise HTTPException(status_code=500, detail="Database connection not established")
+    db = client.users
+    return db.get_collection("users_collection")
+
+async def get_notices_collection():
+    if client is None:
+        raise HTTPException(status_code=500, detail="Database connection not established")
+    db = client.notices_db
+    return db.get_collection("notices_collection")
