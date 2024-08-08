@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from typing import List
 from models.subjects import Subject
 from cruds.subjects import (
@@ -28,30 +28,50 @@ async def create_subject(subject: Subject):
 async def read_all_subjects():
     return await get_all_subjects()
 
-@router.get("/subjects/{semester_name}/{branch_name}", response_model=List[Subject])
-async def read_subjects_by_semester_and_branch(semester_name: str, branch_name: str):
+@router.get("/subjects/semester-and-branch", response_model=List[Subject])
+async def read_subjects_by_semester_and_branch(
+    semester_name: str = Query(description="Semester name"),
+    branch_name: str = Query(description="Branch name")
+):
     return await get_subjects_by_semester_and_branch(semester_name, branch_name)
 
-@router.get("/subjects/{semester_name}/{branch_name}/{subject_code}", response_model=Subject)
-async def read_subject_by_code(semester_name: str, branch_name: str, subject_code: str):
+@router.get("/subjects/code", response_model=Subject)
+async def read_subject_by_code(
+    semester_name: str = Query(description="Semester name"),
+    branch_name: str = Query(description="Branch name"),
+    subject_code: str = Query(description="Subject code")
+):
     subject = await get_subject_by_code(semester_name, branch_name, subject_code)
     if subject is None:
         raise HTTPException(status_code=404, detail="Subject not found")
     return subject
 
-@router.get("/subjects/{semester_name}/{branch_name}/type/{subject_type}", response_model=List[Subject])
-async def read_subjects_by_type(semester_name: str, branch_name: str, subject_type: str):
+@router.get("/subjects/type", response_model=List[Subject])
+async def read_subjects_by_type(
+    semester_name: str = Query(description="Semester name"),
+    branch_name: str = Query(description="Branch name"),
+    subject_type: str = Query(description="Subject type")
+):
     subjects = await get_subject_by_type(semester_name, branch_name, subject_type)
     if not subjects:
         raise HTTPException(status_code=404, detail="No subjects found")
     return subjects
 
-@router.put("/subjects/{semester_name}/{branch_name}/{subject_code}", response_model=Subject)
-async def update_existing_subject(semester_name: str, branch_name: str, subject_code: str, subject: Subject):
+@router.put("/subjects", response_model=Subject)
+async def update_existing_subject(
+    semester_name: str = Query(description="Semester name"),
+    branch_name: str = Query(description="Branch name"),
+    subject_code: str = Query(description="Subject code"),
+    subject: Subject = Query(description="Subject details")
+):
     return await update_subject(semester_name, branch_name, subject_code, subject)
 
-@router.delete("/subjects/{semester_name}/{branch_name}/{subject_code}", response_model=dict)
-async def delete_existing_subject(semester_name: str, branch_name: str, subject_code: str):
+@router.delete("/subjects", response_model=dict)
+async def delete_existing_subject(
+    semester_name: str = Query(description="Semester name"),
+    branch_name: str = Query(description="Branch name"),
+    subject_code: str = Query(description="Subject code")
+):
     success = await delete_subject(semester_name, branch_name, subject_code)
     if not success:
         raise HTTPException(status_code=404, detail="Subject not found")
