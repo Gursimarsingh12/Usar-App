@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Body
 from typing import List
 from models.subjects import Subject
 from cruds.subjects import (
@@ -62,7 +62,7 @@ async def update_existing_subject(
     semester_name: str = Query(description="Semester name"),
     branch_name: str = Query(description="Branch name"),
     subject_code: str = Query(description="Subject code"),
-    subject: Subject = Query(description="Subject details")
+    subject: Subject = Body(description="Subject details")
 ):
     return await update_subject(semester_name, branch_name, subject_code, subject)
 
